@@ -1,14 +1,13 @@
 coverLetterText = 'Добрый день! Рассмотрите, пожалуйста!'
-wait = (ms = 100) => new Promise(res=>setTimeout(res, ms))
 
 errors = []
-witCoverLetter = []
+withCoverLetter = []
 alreadyResponded = []
 
 addedToBlacklist = []
 alreadyAddedToBlacklist = []
 
-log = (...args) => console.log({ errors, witCoverLetter, alreadyResponded, addedToBlacklist, alreadyAddedToBlacklist }, ...args)
+log = (...args) => console.log({ errors, withCoverLetter, alreadyResponded, addedToBlacklist, alreadyAddedToBlacklist }, ...args)
 
 triggerInputChange = (node, value = '') => {
     inputTypes = [
@@ -25,10 +24,25 @@ triggerInputChange = (node, value = '') => {
 
         setValue.call(node, value);
         node.dispatchEvent(event);
-
     }
-
 };
+
+
+wait = (ms = 100) => new Promise(res=>setTimeout(res, ms))
+
+prevLoc = window.location.href
+
+navigation.addEventListener('navigate', (e) => {
+    // TODO: think about preventing leave the page
+   console.error('GO BACK',e.destination.url)
+    e.preventDefault()
+    e.stopPropagation()
+    e.stopImmediatePropagation()
+    // history.back()
+    window.location.href = prevLoc
+})
+
+Object.freeze(document.location);
 
 runTasks = async () => {
     
@@ -54,7 +68,7 @@ runTasks = async () => {
                 
                 triggerInputChange(coverLetter, coverLetterText)
                                 
-                witCoverLetter.push({ title: jobTitle, href: jobHref })
+                withCoverLetter.push({ title: jobTitle, href: jobHref })
             }
             
             
