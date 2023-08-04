@@ -56,7 +56,7 @@ runTasks = async () => {
 
         const target = item.querySelector('.bloko-button_kind-success')
         
-        if (target?.innerText === 'Respond') {
+        if (['Respond', 'Откликнуться'].includes(target?.innerText)) {
             log(index, 'RESPOND', item)
             
             target.click()
