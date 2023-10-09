@@ -11,4 +11,7 @@
 - жмем ентер .
 
 
+- если надоело каждый раз искать скрипт, то добавь в закладки <a href="./bookmark.min.js">этот скрипт</a>. Учти, что скрипт должен начинаться с `javascrit:` (хром любит его удалять при вставке, руками пиши!).
+
+
 [![Demo video on YouTube](./screen.png)](https://www.youtube.com/watch?v=zjyrmfdgSNE)
