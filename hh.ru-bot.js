@@ -72,7 +72,7 @@ runTasks = async () => {
             }
             
             
-            document.querySelector('.bloko-modal-footer .bloko-button_kind-primary').click()
+            document.querySelector('.bloko-modal-footer .bloko-button_kind-primary')?.click()
 
             await wait(1111)
             
