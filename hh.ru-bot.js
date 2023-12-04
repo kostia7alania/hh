@@ -1,124 +1,146 @@
-coverLetterText = 'Добрый день! Рассмотрите, пожалуйста!'
+// minify with https://www.toptal.com/developers/javascript-minifier
 
-errors = []
-withCoverLetter = []
-alreadyResponded = []
+const coverLetterText = "Добрый день! Рассмотрите, пожалуйста!";
 
-addedToBlacklist = []
-alreadyAddedToBlacklist = []
+const errors = [];
+const withCoverLetter = [];
+const alreadyResponded = [];
 
-log = (...args) => console.log({ errors, withCoverLetter, alreadyResponded, addedToBlacklist, alreadyAddedToBlacklist }, ...args)
+const addedToBlacklist = [];
+const alreadyAddedToBlacklist = [];
 
-triggerInputChange = (node, value = '') => {
-    inputTypes = [
-        window.HTMLInputElement,
-        window.HTMLSelectElement,
-        window.HTMLTextAreaElement,
-    ];
+const log = (...args) =>
+  console.log(
+    {
+      errors,
+      withCoverLetter,
+      alreadyResponded,
+      addedToBlacklist,
+      alreadyAddedToBlacklist,
+    },
+    ...args
+  );
 
-    // only process the change on elements we know have a value setter in their constructor
-    if ( inputTypes.indexOf(node.__proto__.constructor) >-1 ) {
+const triggerInputChange = (node, value = "") => {
+  const inputTypes = [
+    window.HTMLInputElement,
+    window.HTMLSelectElement,
+    window.HTMLTextAreaElement,
+  ];
 
-        const setValue = Object.getOwnPropertyDescriptor(node.__proto__, 'value').set;
-        const event = new Event('input', { bubbles: true });
+  // only process the change on elements we know have a value setter in their constructor
+  if (inputTypes.indexOf(node.__proto__.constructor) > -1) {
+    const setValue = Object.getOwnPropertyDescriptor(
+      node.__proto__,
+      "value"
+    ).set;
+    const event = new Event("input", { bubbles: true });
 
-        setValue.call(node, value);
-        node.dispatchEvent(event);
-    }
+    setValue.call(node, value);
+    node.dispatchEvent(event);
+  }
 };
 
+const wait = (ms = 100) => new Promise((res) => setTimeout(res, ms));
 
-wait = (ms = 100) => new Promise(res=>setTimeout(res, ms))
+const prevLoc = window.location.href;
 
-prevLoc = window.location.href
-
-navigation.addEventListener('navigate', (e) => {
-    // TODO: think about preventing leave the page
-   console.error('GO BACK',e.destination.url)
-    e.preventDefault()
-    e.stopPropagation()
-    e.stopImmediatePropagation()
-    // history.back()
-    window.location.href = prevLoc
-})
+navigation.addEventListener("navigate", (e) => {
+  // TODO: think about preventing leave the page
+  console.error("GO BACK", e.destination.url);
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  // history.back()
+  window.location.href = prevLoc;
+});
 
 Object.freeze(document.location);
 
-runTasks = async () => {
-    
-    const items = document.querySelectorAll('.serp-item')
-    for (const [index, item] of items.entries()) {
-        item.scrollIntoView({behavior: 'smooth', block: "center"});
-        item.style.boxShadow = "0 0 5px red";
+const runTasks = async () => {
+  const items = document.querySelectorAll(".serp-item");
+  for (const [index, item] of items.entries()) {
+    item.scrollIntoView({ behavior: "smooth", block: "center" });
+    item.style.boxShadow = "0 0 5px red";
 
-        const jobTitle = item.querySelector('.serp-item__title')?.innerText
-        const jobHref = item.querySelector('.serp-item__title')?.href
+    const jobTitle = item.querySelector(".serp-item__title")?.innerText;
+    const jobHref = item.querySelector(".serp-item__title")?.href;
 
-        const target = item.querySelector('.bloko-button_kind-success')
-        
-        if (['Respond', 'Откликнуться'].includes(target?.innerText)) {
-            log(index, 'RESPOND', item)
-            
-            target.click()
-            await wait(2000)
+    const target = item.querySelector(".bloko-button_kind-success");
 
-            const coverLetter = document.querySelector('[data-qa=vacancy-response-popup-form-letter-input]')
+    if (["Respond", "Откликнуться"].includes(target?.innerText)) {
+      log(index, "RESPOND", item);
 
-            if(coverLetter) {
-                
-                triggerInputChange(coverLetter, coverLetterText)
-                                
-                withCoverLetter.push({ title: jobTitle, href: jobHref })
-            }
-            
-            
-            document.querySelector('.bloko-modal-footer .bloko-button_kind-primary')?.click()
+      target.click();
+      await wait(2000);
 
-            await wait(1111)
-            
-            const errorText = document.querySelector('.vacancy-response-popup-error')?.innerText
-            if (errorText) {
-                errors.push({ title: jobTitle, href: jobHref, error: errorText })
-                document.querySelector('[data-qa=vacancy-response-popup-close-button]')?.click() // close modal
-                continue
-            }
-            
-        } else {
-            alreadyResponded.push({ title: jobTitle, href: jobHref })
-            log(index, 'already RESPONDED', item)
-        }
+      // Вы откликаетесь на вакансию в другой стране
+      document
+        .querySelector(".bloko-modal-footer .bloko-button_kind-success")
+        ?.click();
 
-        
+      const coverLetter = document.querySelector(
+        "[data-qa=vacancy-response-popup-form-letter-input]"
+      );
 
-         await wait(100)
+      if (coverLetter) {
+        triggerInputChange(coverLetter, coverLetterText);
 
-        const blacklist = item.querySelector('[data-qa=vacancy__blacklist-show-add]')
-        
-        if(blacklist) {
-            blacklist.click()    
-            await wait(100)
-            document.querySelector('[data-qa=vacancy__blacklist-menu-add-vacancy]').click()
-            
-            addedToBlacklist.push({ title: jobTitle, href: jobHref })
-            log(index, 'TO BLACK LIST', item)
-            
-        } else {
-            alreadyAddedToBlacklist.push({ title: jobTitle, href: jobHref })
-            log(index, 'already blacklisted', item)
-        }
-    
-        await wait(1000)
-        item.style.boxShadow = "";
+        withCoverLetter.push({ title: jobTitle, href: jobHref });
+      }
+
+      document
+        .querySelector(".bloko-modal-footer .bloko-button_kind-primary")
+        ?.click();
+
+      await wait(1111);
+
+      const errorText = document.querySelector(
+        ".vacancy-response-popup-error"
+      )?.innerText;
+      if (errorText) {
+        errors.push({ title: jobTitle, href: jobHref, error: errorText });
+        document
+          .querySelector("[data-qa=vacancy-response-popup-close-button]")
+          ?.click(); // close modal
+        continue;
+      }
+    } else {
+      alreadyResponded.push({ title: jobTitle, href: jobHref });
+      log(index, "already RESPONDED", item);
     }
 
-    const next = document.querySelector('[data-qa="pager-next"]')
-    if(next) {
-        next.click()
-        await wait(4000)
-        runTasks()
-        log('GO TO NEXT PAGE')
+    await wait(100);
+
+    const blacklist = item.querySelector(
+      "[data-qa=vacancy__blacklist-show-add]"
+    );
+
+    if (blacklist) {
+      blacklist.click();
+      await wait(100);
+      document
+        .querySelector("[data-qa=vacancy__blacklist-menu-add-vacancy]")
+        .click();
+
+      addedToBlacklist.push({ title: jobTitle, href: jobHref });
+      log(index, "TO BLACK LIST", item);
+    } else {
+      alreadyAddedToBlacklist.push({ title: jobTitle, href: jobHref });
+      log(index, "already blacklisted", item);
     }
 
-}
+    await wait(1000);
+    item.style.boxShadow = "";
+  }
 
-runTasks()
+  const next = document.querySelector('[data-qa="pager-next"]');
+  if (next) {
+    next.click();
+    await wait(4000);
+    runTasks();
+    log("GO TO NEXT PAGE");
+  }
+};
+
+runTasks();
