@@ -15,3 +15,9 @@
 
 
 [![Demo video on YouTube](./screen.png)](https://www.youtube.com/watch?v=zjyrmfdgSNE)
+
+# TODO 
+- сделать расширением Хрома
+- добавить автоподнятия https://chromewebstore.google.com/detail/hhru-resumes-updater/ljbjhmajkmjknjifacdcheegakmhpfca
+- добавить платный функционал - перенос всего на сервак
+- мультиаккинг
